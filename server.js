@@ -139,10 +139,14 @@ app.get('/top-charts.html', (req, res) => res.sendFile(path.join(__dirname, 'pub
 app.get('/featured-artists.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'featured-artists.html')));
 app.get('/music-genres.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'music-genres.html')));
 app.get('/new-releases.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'new-releases.html')));
-app.get('/admin-control.html', ensureAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin-control.html'));
+app.get('/admin-control.html', (req, res) => {
+  if (req.session.isAdmin) {
+    res.sendFile(path.join(__dirname, 'public', 'admin-control.html'));
+  } else {
+    res.redirect('/login.html');
+  }
 });
-;
+
 
 app.post('/register', async (req, res) => {
   const { username, password, registrationId } = req.body;
@@ -263,3 +267,5 @@ app.post('/delete-music/:id', async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+module.exports = app;
